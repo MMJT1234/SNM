@@ -1,0 +1,16 @@
+import yfinance as yf
+import numpy as np
+import matplotlib.pyplot as plt
+df = yf.download("TSLA")
+returns = np.log(1+df['Adj Close'].pct_change())
+mu,sigma = returns.mean(),returns.std()
+sim_rets=np.random.normal(mu,sigma,252)
+initial=df['Adj Close'].iloc[-1]
+sim_prices=initial * (sim_rets + 1).cumprod()
+for i in range(100):
+  sim_rets=np.random.normal(mu,sigma,252)
+  sim_prices=initial * (sim_rets + 1).cumprod()
+  plt.axhline(initial,c='k')
+  plt.plot(sim_prices)
+  plt.xlabel('Days')
+  plt.ylabel('Simulated Price ($)')
